@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="280" Width="640">
 
-    <Grid>
+    <Grid Margin="0,0,0,7">
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.0,0" StartPoint="1,1">
                 <GradientStop Color="#FF4360CA" Offset="0"/>
@@ -124,6 +124,34 @@
         <Label Style="{StaticResource myLabelStyle}" x:Name="labelBMI" Content="55.500" Margin="313,29,0,0"
             ContentStringFormat="{}{0:0.0}"/>
         <Label Style="{StaticResource myLabelStyle}" x:Name="labelWeightFull" Content="55.500" Margin="313,130,0,0"/>
-
+        <Label Style="{StaticResource myLabelStyle}" x:Name="labelHeight" Content="173" Margin="517,29,0,0"
+               FontSize="20" 
+               ContentStringFormat="{}{0:0}" Height="47" Width="70"/>
+        <Button x:Name="buttonUpArrowHeight" Style="{StaticResource myIconButtonStyle}" Content="" 
+            Margin="600,30,0,0" Click="buttonUpArrowHeight_Click"
+            Height="20" Width="20"
+                >
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="270"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <Button x:Name="buttonDownArrowWeight" Style="{StaticResource myIconButtonStyle}" Content="" 
+            Margin="600,55,0,0" Click="buttonDownArrowHeight_Click"
+            Height="20" Width="20">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <Label Style="{StaticResource myLabelStyle}" x:Name="labelWeightName" Content="Hello There" FontSize="10" Margin="496,85,0,0" Height="30" Width="126"/>
     </Grid>
 </Window>

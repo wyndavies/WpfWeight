@@ -24,7 +24,9 @@ namespace WpfWeight
         double weightKG;
         double weightLB;
         static double conversionToLB = 2.2;
-        static double heightMetres = 1.73;
+        static int heightCM = 173;
+        string baseLocation;
+        WeightCategories wc = new WeightCategories();
 
         public MainWindow()
         {
@@ -34,9 +36,12 @@ namespace WpfWeight
 
             bool readSuccess = false;
 
-            if (File.Exists(@"D:\Code\WpfWeight\value.txt"))
+            baseLocation = AppDomain.CurrentDomain.BaseDirectory;
+            string fileLocation = baseLocation + "value.txt";
+
+            if (File.Exists(fileLocation))
             {
-                string fileValue = File.ReadAllText(@"D:\Code\WpfWeight\value.txt");
+                string fileValue = File.ReadAllText(fileLocation);
                 if(Double.TryParse(fileValue, out weightKG))
                 {
                     readSuccess = true;
@@ -46,6 +51,20 @@ namespace WpfWeight
             if (!readSuccess)
             {
                 weightKG = 85.7;
+            }
+
+            fileLocation = baseLocation + "height.txt";
+            if (File.Exists(fileLocation))
+            {
+                string fileValue = File.ReadAllText(fileLocation);
+                if(Int32.TryParse(fileValue, out heightCM))
+                {
+                    readSuccess = true;
+                }
+            }
+            if(!readSuccess)
+            {
+                heightCM = 173;
             }
 
             calcLabelsFromKG();
@@ -123,6 +142,24 @@ namespace WpfWeight
             }
         }
 
+        private void buttonUpArrowHeight_Click(object sender, RoutedEventArgs e)
+        {
+            if (heightCM < 1000)
+            {
+                heightCM++;
+                calcBMIFullWeight();
+            }
+        }
+        
+        private void buttonDownArrowHeight_Click(object sender, RoutedEventArgs e)
+        {
+            if (heightCM > 10)
+            {
+                heightCM--;
+                calcBMIFullWeight();
+            }
+        }
+
         private void calcLabelsFromKG()
         {
             weightKG = Math.Round(weightKG, 1);
@@ -143,11 +180,17 @@ namespace WpfWeight
 
         private void calcBMIFullWeight()
         {
-            double BMI = weightKG / (heightMetres * heightMetres);
-            labelBMI.Content = BMI;
+            double h2 = heightCM * heightCM;
+            double BMI = weightKG / (h2 / 10000);
 
             int stone = (int)(Math.Truncate( weightLB / 14));
             double lb = weightLB - (stone * 14);
+            if(lb >= 13.5)
+            {
+                stone++;
+                lb = 0;
+            }
+
 
             updateLabels(BMI, stone, lb);
         }
@@ -157,15 +200,19 @@ namespace WpfWeight
             labelWeight.Content = weightKG;
             labelLB.Content = weightLB;
             labelBMI.Content = BMI;
+            labelHeight.Content = heightCM;
 
             string fullWeight = stone + "-" + String.Format("{0:00}", lb);
             labelWeightFull.Content = fullWeight;
+
+            labelWeightName.Content = wc.getWeight((int)weightLB);
         }
 
         private void windowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Save the value of KG.
-            File.WriteAllText(@"D:\Code\WpfWeight\value.txt", String.Format("{0:0.0}", weightKG));
+            File.WriteAllText(baseLocation + "value.txt", String.Format("{0:0.0}", weightKG));
+            File.WriteAllText(baseLocation + "height.txt", String.Format("{0:0}", heightCM));
         }
 
         private void buttonExit_Click(object sender, RoutedEventArgs e)
